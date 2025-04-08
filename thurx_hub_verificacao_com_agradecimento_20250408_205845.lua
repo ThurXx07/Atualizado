@@ -1,78 +1,64 @@
--- ThurXHub - Verificação de Key + Tela de Agradecimento + Abertura do Menu
+-- ThurX Hub - Script Principal
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
 
--- Função para abrir o menu principal (exemplo)
-function abrirMenuThurxHub()
-    local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-    gui.Name = "ThurxHubMenu"
-    gui.ResetOnSpawn = false
+-- Verificação por Key
+local keyValida1 = "Thurx"
+local keyValida2 = "THURXHUB0007"
+local keyGui = Instance.new("ScreenGui", PlayerGui)
+keyGui.Name = "ThurxKeyGui"
+keyGui.ResetOnSpawn = false
 
-    local fundo = Instance.new("Frame", gui)
-    fundo.Size = UDim2.new(1, 0, 1, 0)
-    fundo.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    fundo.BorderSizePixel = 0
+local blackFrame = Instance.new("Frame", keyGui)
+blackFrame.Size = UDim2.new(1, 0, 1, 0)
+blackFrame.BackgroundColor3 = Color3.new(0, 0, 0)
 
-    local texto = Instance.new("TextLabel", fundo)
-    texto.Size = UDim2.new(1, 0, 0.1, 0)
-    texto.Position = UDim2.new(0, 0, 0, 0)
-    texto.Text = "THURX HUB V1 BROOKHAVEN RP 🏡"
-    texto.TextColor3 = Color3.fromRGB(255, 255, 255)
-    texto.Font = Enum.Font.GothamBold
-    texto.TextScaled = true
-    texto.BackgroundTransparency = 1
-end
+local aviso = Instance.new("TextLabel", blackFrame)
+aviso.Size = UDim2.new(1, 0, 0.2, 0)
+aviso.Position = UDim2.new(0, 0, 0.3, 0)
+aviso.Text = "OBRIGADO POR USAR\nTHURX HUB\nScript inspirado no Rael Hub 🏡"
+aviso.TextScaled = true
+aviso.TextColor3 = Color3.new(1, 1, 1)
+aviso.BackgroundTransparency = 1
+aviso.Font = Enum.Font.SourceSansBold
 
--- Função de agradecimento
-function mostrarTelaAgradecimento(callback)
-    local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-    gui.Name = "ThurxAgradecimento"
-    gui.ResetOnSpawn = false
+local barra = Instance.new("Frame", blackFrame)
+barra.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+barra.Position = UDim2.new(0.2, 0, 0.6, 0)
+barra.Size = UDim2.new(0, 0, 0.05, 0)
 
-    local fundo = Instance.new("Frame", gui)
-    fundo.Size = UDim2.new(1, 0, 1, 0)
-    fundo.BackgroundColor3 = Color3.new(0, 0, 0)
-    fundo.BorderSizePixel = 0
+-- Animação da barra
+local TweenService = game:GetService("TweenService")
+local barraTween = TweenService:Create(barra, TweenInfo.new(2), {Size = UDim2.new(0.6, 0, 0.05, 0)})
+barraTween:Play()
+barraTween.Completed:Wait()
 
-    local texto = Instance.new("TextLabel", fundo)
-    texto.Size = UDim2.new(1, 0, 0.5, 0)
-    texto.Position = UDim2.new(0, 0, 0.2, 0)
-    texto.Text = "OBRIGADO POR USAR\nTHURX HUB\n\nScript Inspirado no rael hub 🏡"
-    texto.TextColor3 = Color3.new(1, 1, 1)
-    texto.Font = Enum.Font.GothamBlack
-    texto.TextSize = 28
-    texto.TextScaled = true
-    texto.BackgroundTransparency = 1
+-- Input de Key
+aviso.Text = "Digite a KEY para continuar"
 
-    local barraFundo = Instance.new("Frame", fundo)
-    barraFundo.Size = UDim2.new(0.6, 0, 0.05, 0)
-    barraFundo.Position = UDim2.new(0.2, 0, 0.8, 0)
-    barraFundo.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    barraFundo.BorderSizePixel = 0
+local input = Instance.new("TextBox", blackFrame)
+input.Size = UDim2.new(0.6, 0, 0.08, 0)
+input.Position = UDim2.new(0.2, 0, 0.7, 0)
+input.PlaceholderText = "Digite sua key aqui..."
+input.Font = Enum.Font.SourceSans
+input.TextScaled = true
+input.Text = ""
 
-    local barra = Instance.new("Frame", barraFundo)
-    barra.Size = UDim2.new(0, 0, 1, 0)
-    barra.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-    barra.BorderSizePixel = 0
+local confirmar = Instance.new("TextButton", blackFrame)
+confirmar.Text = "LIBERAR ACESSO"
+confirmar.Size = UDim2.new(0.6, 0, 0.08, 0)
+confirmar.Position = UDim2.new(0.2, 0, 0.8, 0)
+confirmar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+confirmar.Font = Enum.Font.SourceSansBold
+confirmar.TextScaled = true
 
-    local tweenInfo = TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-    local tween = TweenService:Create(barra, tweenInfo, {Size = UDim2.new(1, 0, 1, 0)})
-
-    tween:Play()
-    tween.Completed:Connect(function()
-        gui:Destroy()
-        callback()
-    end)
-end
-
--- Simulação de digitar a key
-local keyDigitada = "Thurx" -- substitua por input do jogador
-
-if keyDigitada == "Thurx" or keyDigitada == "THURXHUB0007" then
-    mostrarTelaAgradecimento(function()
-        abrirMenuThurxHub()
-    end)
-else
-    warn("Key incorreta. Acesso negado.")
-end
+confirmar.MouseButton1Click:Connect(function()
+    if input.Text == keyValida1 or input.Text == keyValida2 then
+        keyGui:Destroy()
+        -- Abre o menu principal
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ThurXx07/Atualizado/main/thurx_hub_menu_completo.lua"))()
+    else
+        aviso.Text = "KEY INVÁLIDA - TENTE NOVAMENTE"
+    end
+end)
