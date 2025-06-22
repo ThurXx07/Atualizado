@@ -1,47 +1,48 @@
--- ThurX Hub | Brookhaven RP 🏡
--- Menu de flood estilo AMOLED + Toggle
+-- Interface Flood Pronta — ThurX Hub (Delta Compatível)
 
 local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Player = Players.LocalPlayer
 local ChatEvent = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents") and ReplicatedStorage.DefaultChatSystemChatEvents:FindFirstChild("SayMessageRequest")
 
 local floodEnabled = false
 local selectedMsg = ""
 
-local function sendFlood()
-    while floodEnabled do
-        if selectedMsg ~= "" and ChatEvent then
-            ChatEvent:FireServer(selectedMsg, "All")
-        end
-        task.wait(1.5)
-    end
-end
+-- GUI principal
+local main = Instance.new("ScreenGui", game.CoreGui)
+main.Name = "ThurXFloodUI"
 
--- Frame principal
+local btnTrol = Instance.new("TextButton")
+btnTrol.Size = UDim2.new(0, 150, 0, 30)
+btnTrol.Position = UDim2.new(0, 10, 0, 10)
+btnTrol.Text = "Abrir Menu Flood"
+btnTrol.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+btnTrol.TextColor3 = Color3.new(1, 1, 1)
+btnTrol.Font = Enum.Font.GothamBold
+btnTrol.TextSize = 14
+Instance.new("UICorner", btnTrol).CornerRadius = UDim.new(0, 8)
+btnTrol.Parent = main
+
+-- Flood Frame
 local trolFrame = Instance.new("Frame")
-trolFrame.Size = UDim2.new(0, 300, 0, 200)
-trolFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+trolFrame.Size = UDim2.new(0, 300, 0, 240)
+trolFrame.Position = UDim2.new(0, 10, 0, 50)
 trolFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-trolFrame.BorderSizePixel = 0
 trolFrame.Visible = false
 Instance.new("UICorner", trolFrame).CornerRadius = UDim.new(0, 8)
 trolFrame.Parent = main
 
--- Aviso
 local aviso = Instance.new("TextLabel")
-aviso.Text = "⚠️ Sua conta pode ser avisada por spam!"
+aviso.Text = "⚠️ Risco de aviso por spam!"
 aviso.Size = UDim2.new(1, -20, 0, 40)
 aviso.Position = UDim2.new(0, 10, 0, 5)
 aviso.TextColor3 = Color3.new(1, 1, 1)
 aviso.Font = Enum.Font.GothamSemibold
 aviso.TextSize = 13
 aviso.BackgroundTransparency = 1
-aviso.TextWrapped = true
 aviso.TextXAlignment = Enum.TextXAlignment.Left
 aviso.Parent = trolFrame
 
--- Botão dropdown de mensagens
 local msgDropdown = Instance.new("TextButton")
 msgDropdown.Size = UDim2.new(1, -20, 0, 30)
 msgDropdown.Position = UDim2.new(0, 10, 0, 50)
@@ -50,11 +51,9 @@ msgDropdown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 msgDropdown.TextColor3 = Color3.new(1, 1, 1)
 msgDropdown.Font = Enum.Font.Gotham
 msgDropdown.TextSize = 14
-msgDropdown.AutoButtonColor = true
 Instance.new("UICorner", msgDropdown).CornerRadius = UDim.new(0, 6)
 msgDropdown.Parent = trolFrame
 
--- Opções de mensagens
 local msgOptions = {
     "[servidor] Samy e thur que manda no chat kkkj",
     "[servidor] Samy&thur by hackead server",
@@ -91,7 +90,6 @@ msgDropdown.MouseButton1Click:Connect(function()
     dropdownMenu.Visible = not dropdownMenu.Visible
 end)
 
--- Botão Toggle estilo switch
 local toggleFlood = Instance.new("TextButton")
 toggleFlood.Size = UDim2.new(1, -20, 0, 30)
 toggleFlood.Position = UDim2.new(0, 10, 0, 90 + (#msgOptions * 28))
@@ -106,11 +104,14 @@ toggleFlood.Parent = trolFrame
 toggleFlood.MouseButton1Click:Connect(function()
     floodEnabled = not floodEnabled
     toggleFlood.Text = floodEnabled and "⛔ Desativar Flood" or "🔁 Ativar Flood"
-    if floodEnabled then sendFlood() end
+    if floodEnabled then
+        while floodEnabled and selectedMsg ~= "" and ChatEvent do
+            ChatEvent:FireServer(selectedMsg, "All")
+            task.wait(1.5)
+        end
+    end
 end)
 
--- Quando clicar no botão Trol, mostra esse frame
 btnTrol.MouseButton1Click:Connect(function()
-    contentFrame:ClearAllChildren()
-    trolFrame.Visible = true
+    trolFrame.Visible = not trolFrame.Visible
 end)
