@@ -1,27 +1,42 @@
--- ThurX SamyXHub | Brookhaven RP 🏡
--- Menu estilo imagem, AMOLED, layout lateral, botão "Avatar" único, itens em linha, dark, drag size, mobile/delta executor
+-- ThurX & Samy | Brookhaven RP 🏡 Menu estilo imagem, AMOLED, drag, Delta Executor/mobile, IDs atualizados
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local UIS = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 
--- IDs das imagens fornecidas
-local CABECA = {"12465483807","1246547853","12465465333","12465376206"}
-local MAO = {
-    "11182924874","11679250718","10954586887","11613796964","12483105503","12483109504",
-    "1360863184","10789914680","10789939838","10789950437","10789945808",
-    "11511211329","10713780551","10714157708","10713798995","10713770556","10713817180",
-    "11251080505","10713761236"
+-- IDs DE ITENS (agora com os valores atualizados)
+local CHAPEUS = {
+    "15449843197", "6238615247", "5522245154", "13999441546", "13685386157",
+    "14424693881", "16513914096"
+}
+local MASCARAS = {
+    "15153086202", "14960781135", "10832389374841", "14942141376", "17164246258", "15153122962",
+    "14840793625", "15153906895", "15021037739", "15153876013", "15013531613", "15013413561"
+}
+local CAMISAS = {
+    "11182924874", "11679250718", "10954586887", "11613796964", "12483105503", "12483109504"
+}
+local GARRAS = {
+    "15153086202", "14960781135", "10832389374841", "14942141376", "17164246258", "15153122962",
+    "14840793625", "15153906895", "15021037739", "15153876013", "15013531613", "15013413561"
 }
 local SAPATOS = {
-    "11856087406","12298192447","14337827820","11856084059","12088306881","13978580595",
-    "12088300165","14337838380","1397739307","12286197088","14338740380","13978580785",
-    "13978571030","12296180963","1397730483","14338738628","14338744148"
+    "13692896835", "13692898868", "13692900864", "13692909747", "13692902454",
+    "13692908134", "13692906657", "13692904559"
+}
+local MAO = {
+    "10789914680", "10789939838", "10789950437", "10789945800",
+    "10713780551", "10714157708", "10713798995", "10713770556",
+    "10713817180", "11251080505", "10713761236"
+}
+local FLORES = {
+    "12465483807", "1246547853", "12465465333", "12465376206"
 }
 
+-- CORES
 local AMOLED = Color3.fromRGB(0,0,0)
 local BTN = Color3.fromRGB(35,35,35)
+local BTN2 = Color3.fromRGB(30,30,30)
 local WHITE = Color3.fromRGB(255,255,255)
 local DARK = Color3.fromRGB(18,18,18)
 local PURPLE = Color3.fromRGB(130,0,220)
@@ -46,7 +61,7 @@ local loadTitle = Instance.new("TextLabel", loadFrame)
 loadTitle.Size = UDim2.new(1,0,0,44)
 loadTitle.Position = UDim2.new(0,0,0,14)
 loadTitle.BackgroundTransparency = 1
-loadTitle.Text = "samy&thur script"
+loadTitle.Text = "thurx&samy"
 loadTitle.TextColor3 = WHITE
 loadTitle.Font = Enum.Font.GothamBlack
 loadTitle.TextSize = 28
@@ -67,7 +82,7 @@ local loadMsg = Instance.new("TextLabel", loadFrame)
 loadMsg.Size = UDim2.new(1,0,0,30)
 loadMsg.Position = UDim2.new(0,0,0,77)
 loadMsg.BackgroundTransparency = 1
-loadMsg.Text = "Carregando roupas..."
+loadMsg.Text = "Carregando..."
 loadMsg.TextColor3 = WHITE
 loadMsg.Font = Enum.Font.Gotham
 loadMsg.TextSize = 16
@@ -88,140 +103,162 @@ loadFrame:Destroy()
 
 -- MENU PRINCIPAL
 local menu = Instance.new("Frame", gui)
-menu.Size = UDim2.new(0, 600, 0, 390)
-menu.Position = UDim2.new(0.5, -300, 0.5, -195)
+menu.Size = UDim2.new(0, 550, 0, 392)
+menu.Position = UDim2.new(0.5, -275, 0.5, -196)
 menu.BackgroundColor3 = DARK
 menu.Active = true
 menu.Draggable = true
 menu.ZIndex = 10
 menu.BorderSizePixel = 0
-newUICorner(menu, 22)
+newUICorner(menu, 19)
 
 -- Topo
 local topbar = Instance.new("Frame", menu)
-topbar.Size = UDim2.new(1, 0, 0, 44)
+topbar.Size = UDim2.new(1, 0, 0, 47)
 topbar.BackgroundColor3 = AMOLED
 topbar.ZIndex = 11
 newUICorner(topbar, 15)
+topbar.Active = true
+topbar.Draggable = false
 
 local title = Instance.new("TextLabel", topbar)
-title.Size = UDim2.new(1, -80, 1, 0)
+title.Size = UDim2.new(1, -80, 0.5, 0)
 title.Position = UDim2.new(0, 16, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "ThurX Hub | brookhaven rp 🏡 samy&thur brm"
+title.Text = "ThurX Hub | brookhaven rp"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.TextColor3 = WHITE
 title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Fechar e minimizar
-local closeBtn = Instance.new("TextButton", topbar)
-closeBtn.Size = UDim2.new(0,38,0,32)
-closeBtn.Position = UDim2.new(1,-44,0,6)
-closeBtn.BackgroundColor3 = BTN
-closeBtn.TextColor3 = WHITE
-closeBtn.Text = "X"
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 20
-closeBtn.ZIndex = 12
-newUICorner(closeBtn, 8)
+local subtitle = Instance.new("TextLabel", topbar)
+subtitle.Size = UDim2.new(1, -80, 0.5, 0)
+subtitle.Position = UDim2.new(0, 16, 0.5, 0)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "🏡 samy&thur brm"
+subtitle.Font = Enum.Font.Gotham
+subtitle.TextSize = 15
+subtitle.TextColor3 = WHITE
+subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
 local minBtn = Instance.new("TextButton", topbar)
 minBtn.Size = UDim2.new(0,38,0,32)
-minBtn.Position = UDim2.new(1,-84,0,6)
+minBtn.Position = UDim2.new(1,-84,0,7)
 minBtn.BackgroundColor3 = BTN
 minBtn.TextColor3 = WHITE
 minBtn.Text = "-"
 minBtn.Font = Enum.Font.GothamBold
-minBtn.TextSize = 24
+minBtn.TextSize = 22
 minBtn.ZIndex = 12
 newUICorner(minBtn, 8)
+minBtn.BorderColor3 = WHITE
+minBtn.BorderSizePixel = 2
+
+local plusBtn = Instance.new("TextButton", topbar)
+plusBtn.Size = UDim2.new(0,38,0,32)
+plusBtn.Position = UDim2.new(1,-44,0,7)
+plusBtn.BackgroundColor3 = BTN
+plusBtn.TextColor3 = WHITE
+plusBtn.Text = "+"
+plusBtn.Font = Enum.Font.GothamBold
+plusBtn.TextSize = 22
+plusBtn.ZIndex = 12
+newUICorner(plusBtn, 8)
+plusBtn.BorderColor3 = WHITE
+plusBtn.BorderSizePixel = 2
 
 -- Barra lateral (Avatar)
 local sidebar = Instance.new("Frame", menu)
-sidebar.Size = UDim2.new(0, 93, 1, -44)
-sidebar.Position = UDim2.new(0, 0, 0, 44)
+sidebar.Size = UDim2.new(0, 113, 1, -47)
+sidebar.Position = UDim2.new(0, 0, 0, 47)
 sidebar.BackgroundColor3 = AMOLED
 sidebar.ZIndex = 10
 newUICorner(sidebar, 16)
 
 local btnAvatar = Instance.new("TextButton", sidebar)
-btnAvatar.Size = UDim2.new(1,-14,0,48)
-btnAvatar.Position = UDim2.new(0,7,0,18)
+btnAvatar.Size = UDim2.new(1,-16,0,54)
+btnAvatar.Position = UDim2.new(0,8,0,22)
 btnAvatar.BackgroundColor3 = PURPLE
 btnAvatar.Text = "Avatar"
 btnAvatar.Font = Enum.Font.GothamBold
 btnAvatar.TextColor3 = WHITE
-btnAvatar.TextSize = 18
+btnAvatar.TextSize = 20
 btnAvatar.ZIndex = 12
-newUICorner(btnAvatar, 14)
+btnAvatar.AutoButtonColor = true
+newUICorner(btnAvatar, 15)
 
 -- Conteúdo (lado direito)
 local content = Instance.new("Frame", menu)
-content.Size = UDim2.new(1, -115, 1, -44)
-content.Position = UDim2.new(0, 108, 0, 44)
-content.BackgroundColor3 = WHITE
+content.Size = UDim2.new(1, -135, 1, -47)
+content.Position = UDim2.new(0, 125, 0, 47)
+content.BackgroundColor3 = AMOLED
 content.ZIndex = 11
+content.ClipsDescendants = true
 newUICorner(content, 19)
 
--- Elemento: linha para cada grupo (cabeça, mão, sapato)
+local scroll = Instance.new("ScrollingFrame", content)
+scroll.Size = UDim2.new(1,0,1,0)
+scroll.CanvasSize = UDim2.new(0,0,0,600)
+scroll.BackgroundTransparency = 1
+scroll.ScrollBarThickness = 7
+scroll.ZIndex = 13
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.None
+
 local function createRow(y, nome, idList)
-    local label = Instance.new("TextLabel", content)
-    label.Size = UDim2.new(0, 92, 0, 32)
-    label.Position = UDim2.new(0, 10, 0, y)
+    local label = Instance.new("TextLabel", scroll)
+    label.Size = UDim2.new(0, 90, 0, 28)
+    label.Position = UDim2.new(0, 12, 0, y)
     label.BackgroundTransparency = 1
     label.Text = nome
     label.Font = Enum.Font.GothamBold
-    label.TextColor3 = Color3.fromRGB(30,30,30)
-    label.TextSize = 16
+    label.TextColor3 = WHITE
+    label.TextSize = 17
+    label.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- ID selecionado
     local selectedId = ""
-    local selBar = Instance.new("TextLabel", content)
-    selBar.Size = UDim2.new(0, 90, 0, 28)
-    selBar.Position = UDim2.new(0,110,0,y+2)
-    selBar.BackgroundColor3 = BTN
+    local selBar = Instance.new("TextLabel", scroll)
+    selBar.Size = UDim2.new(0, 132, 0, 28)
+    selBar.Position = UDim2.new(0, 104, 0, y)
+    selBar.BackgroundColor3 = BTN2
     selBar.TextColor3 = WHITE
     selBar.Font = Enum.Font.Gotham
-    selBar.TextSize = 13
+    selBar.TextSize = 14
     selBar.Text = ""
-    newUICorner(selBar, 8)
     selBar.TextXAlignment = Enum.TextXAlignment.Center
     selBar.TextYAlignment = Enum.TextYAlignment.Center
+    newUICorner(selBar, 9)
 
-    -- Dropdown ids
-    local idBtn = Instance.new("TextButton", content)
-    idBtn.Size = UDim2.new(0, 66, 0, 28)
-    idBtn.Position = UDim2.new(0, 210, 0, y+2)
-    idBtn.BackgroundColor3 = BTN
+    local idBtn = Instance.new("TextButton", scroll)
+    idBtn.Size = UDim2.new(0, 54, 0, 28)
+    idBtn.Position = UDim2.new(0, 242, 0, y)
+    idBtn.BackgroundColor3 = BTN2
     idBtn.Text = "IDs"
     idBtn.Font = Enum.Font.GothamBold
     idBtn.TextColor3 = WHITE
     idBtn.TextSize = 13
-    newUICorner(idBtn, 8)
+    newUICorner(idBtn, 9)
 
     local idDropdown = nil
     idBtn.MouseButton1Click:Connect(function()
         if idDropdown and idDropdown.Parent then idDropdown:Destroy() end
-        idDropdown = Instance.new("ScrollingFrame", content)
-        idDropdown.Size = UDim2.new(0, 88, 0, math.min(7,#idList)*28)
-        idDropdown.Position = UDim2.new(0, 210, 0, y+32)
+        idDropdown = Instance.new("ScrollingFrame", scroll)
+        idDropdown.Size = UDim2.new(0, 90, 0, math.min(7,#idList)*27)
+        idDropdown.Position = UDim2.new(0, 242, 0, y+30)
         idDropdown.BackgroundColor3 = Color3.fromRGB(22,22,22)
         idDropdown.ZIndex = 100
         idDropdown.ScrollBarThickness = 5
-        idDropdown.CanvasSize = UDim2.new(0,0,0,#idList*28)
-        idDropdown.AutomaticCanvasSize = Enum.AutomaticSize.None
+        idDropdown.CanvasSize = UDim2.new(0,0,0,#idList*27)
         newUICorner(idDropdown, 8)
         for i,id in ipairs(idList) do
             local optBtn = Instance.new("TextButton", idDropdown)
             optBtn.Size = UDim2.new(1, -8, 0, 24)
-            optBtn.Position = UDim2.new(0,4,0,(i-1)*28+2)
+            optBtn.Position = UDim2.new(0,4,0,(i-1)*27+2)
             optBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
             optBtn.TextColor3 = WHITE
             optBtn.Text = id
             optBtn.Font = Enum.Font.Gotham
             optBtn.TextSize = 13
-            optBtn.ZIndex = 100
+            optBtn.ZIndex = 101
             newUICorner(optBtn, 6)
             optBtn.MouseButton1Click:Connect(function()
                 selectedId = id
@@ -231,16 +268,15 @@ local function createRow(y, nome, idList)
         end
     end)
 
-    -- Botão aplicar
-    local applyBtn = Instance.new("TextButton", content)
-    applyBtn.Size = UDim2.new(0, 68, 0, 28)
-    applyBtn.Position = UDim2.new(0, 290, 0, y+2)
+    local applyBtn = Instance.new("TextButton", scroll)
+    applyBtn.Size = UDim2.new(0, 66, 0, 28)
+    applyBtn.Position = UDim2.new(0, 312, 0, y)
     applyBtn.BackgroundColor3 = PURPLE
     applyBtn.Text = "Aplicar"
     applyBtn.Font = Enum.Font.GothamBold
     applyBtn.TextColor3 = WHITE
     applyBtn.TextSize = 13
-    newUICorner(applyBtn, 8)
+    newUICorner(applyBtn, 9)
     applyBtn.MouseButton1Click:Connect(function()
         if selectedId and selectedId ~= "" then
             local char = LocalPlayer.Character
@@ -256,16 +292,15 @@ local function createRow(y, nome, idList)
         end
     end)
 
-    -- Botão remover
-    local removeBtn = Instance.new("TextButton", content)
-    removeBtn.Size = UDim2.new(0, 68, 0, 28)
-    removeBtn.Position = UDim2.new(0, 365, 0, y+2)
-    removeBtn.BackgroundColor3 = BTN
+    local removeBtn = Instance.new("TextButton", scroll)
+    removeBtn.Size = UDim2.new(0, 66, 0, 28)
+    removeBtn.Position = UDim2.new(0, 384, 0, y)
+    removeBtn.BackgroundColor3 = PURPLE
     removeBtn.Text = "Remover"
     removeBtn.Font = Enum.Font.GothamBold
     removeBtn.TextColor3 = WHITE
     removeBtn.TextSize = 13
-    newUICorner(removeBtn, 8)
+    newUICorner(removeBtn, 9)
     removeBtn.MouseButton1Click:Connect(function()
         local char = LocalPlayer.Character
         if char then
@@ -278,11 +313,18 @@ local function createRow(y, nome, idList)
     end)
 end
 
--- Inicializa layout dos itens (um embaixo do outro)
-clear(content)
-createRow(16,"Cabeça",CABECA)
-createRow(62,"Mão",MAO)
-createRow(108,"Sapato",SAPATOS)
+-- Inicializa layout dos itens (um embaixo do outro, rolagem)
+clear(scroll)
+local y = 25
+createRow(y, "Cabeça", CHAPEUS)      y = y + 48
+createRow(y, "Máscara", MASCARAS)    y = y + 48
+createRow(y, "Camisa", CAMISAS)      y = y + 48
+createRow(y, "Garras", GARRAS)       y = y + 48
+createRow(y, "Sapato", SAPATOS)      y = y + 48
+createRow(y, "Mão", MAO)             y = y + 48
+createRow(y, "Flores", FLORES)       y = y + 48
+
+scroll.CanvasSize = UDim2.new(0,0,0,y+48)
 
 -- Minimizar
 local miniFrame
@@ -290,43 +332,47 @@ minBtn.MouseButton1Click:Connect(function()
     menu.Visible = false
     if not miniFrame then
         miniFrame = Instance.new("Frame", gui)
-        miniFrame.Size = UDim2.new(0, 260, 0, 40)
-        miniFrame.Position = UDim2.new(0.02,0,0.73,0)
+        miniFrame.Size = UDim2.new(0, 310, 0, 44)
+        miniFrame.Position = UDim2.new(0.07,0,0.81,0)
         miniFrame.BackgroundColor3 = AMOLED
         miniFrame.ZIndex = 100
         miniFrame.Draggable = true
         newUICorner(miniFrame, 13)
         local miniTitle = Instance.new("TextLabel", miniFrame)
-        miniTitle.Size = UDim2.new(1,-68,1,0)
-        miniTitle.Position = UDim2.new(0,12,0,0)
+        miniTitle.Size = UDim2.new(1,-84,1,0)
+        miniTitle.Position = UDim2.new(0,14,0,0)
         miniTitle.BackgroundTransparency = 1
-        miniTitle.Text = "thurx&samy | brookhaven rp 🏡"
+        miniTitle.Text = "samy&thur"
         miniTitle.TextColor3 = WHITE
         miniTitle.Font = Enum.Font.GothamBold
-        miniTitle.TextSize = 16
+        miniTitle.TextSize = 19
         miniTitle.TextXAlignment = Enum.TextXAlignment.Left
         local minRestore = Instance.new("TextButton", miniFrame)
-        minRestore.Size = UDim2.new(0,34,0,26)
-        minRestore.Position = UDim2.new(1,-62,0,7)
+        minRestore.Size = UDim2.new(0,36,0,30)
+        minRestore.Position = UDim2.new(1,-76,0,7)
         minRestore.BackgroundColor3 = BTN
         minRestore.TextColor3 = WHITE
         minRestore.Text = "-"
         minRestore.Font = Enum.Font.GothamBold
-        minRestore.TextSize = 17
+        minRestore.TextSize = 19
+        minRestore.BorderSizePixel = 2
+        minRestore.BorderColor3 = WHITE
         newUICorner(minRestore,7)
-        minRestore.MouseButton1Click:Connect(function()
-            menu.Visible = true
-            miniFrame.Visible = false
-        end)
         local minClose = Instance.new("TextButton", miniFrame)
-        minClose.Size = UDim2.new(0,34,0,26)
-        minClose.Position = UDim2.new(1,-30,0,7)
+        minClose.Size = UDim2.new(0,36,0,30)
+        minClose.Position = UDim2.new(1,-36,0,7)
         minClose.BackgroundColor3 = BTN
         minClose.TextColor3 = WHITE
         minClose.Text = "X"
         minClose.Font = Enum.Font.GothamBold
-        minClose.TextSize = 17
+        minClose.TextSize = 19
+        minClose.BorderSizePixel = 2
+        minClose.BorderColor3 = WHITE
         newUICorner(minClose,7)
+        minRestore.MouseButton1Click:Connect(function()
+            menu.Visible = true
+            miniFrame.Visible = false
+        end)
         minClose.MouseButton1Click:Connect(function()
             miniFrame.Visible = false
             floatBtn.Visible = true
@@ -337,22 +383,464 @@ end)
 
 -- Fechar/abrir menu
 local floatBtn = Instance.new("TextButton", gui)
-floatBtn.Size = UDim2.new(0,48,0,48)
-floatBtn.Position = UDim2.new(0.03,0,0.62,0)
+floatBtn.Size = UDim2.new(0,54,0,54)
+floatBtn.Position = UDim2.new(0.03,0,0.83,0)
 floatBtn.BackgroundColor3 = AMOLED
 floatBtn.TextColor3 = PURPLE
 floatBtn.Text = "東"
 floatBtn.Font = Enum.Font.GothamBlack
-floatBtn.TextSize = 25
+floatBtn.TextSize = 28
 floatBtn.Visible = false
-newUICorner(floatBtn, 12)
+newUICorner(floatBtn, 13)
 floatBtn.Draggable = true
 
-closeBtn.MouseButton1Click:Connect(function()
-    menu.Visible = false
-    floatBtn.Visible = true
+plusBtn.MouseButton1Click:Connect(function()
+    -- Apenas de enfeite, pode adicionar funções extras aqui se quiser
 end)
 floatBtn.MouseButton1Click:Connect(function()
     menu.Visible = true
     floatBtn.Visible = false
 end)
+-- X fecha para botão flutuante
+menu.Active = true
+menu.Draggable = true
+plusBtn.MouseButton1Click:Connect(function() end)
+menu.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        menu.Draggable = true
+    end
+end)
+menu.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        menu.Draggable = false
+    end
+end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+-- X fecha para botão flutuante
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+floatBtn.MouseButton1Click:Connect(function()
+    menu.Visible = true
+    floatBtn.Visible = false
+end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+plusBtn.MouseButton1Click:Connect(function() end)
+
+-- PlusBtn função de enfeite. Menu pronto para Delta Executor/mobile, drag e dark AMOLED.
