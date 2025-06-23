@@ -1,143 +1,51 @@
--- ThurX & Samy Hub Menu Script (Mobile, Delta Executor)
--- Corrigido: Flood realmente envia, ícones atualizados, lista de animações/danças com IDs válidos,
--- layout AMOLED, barra preta de rolagem, minimizar/maximizar/menu T, aviso de spam visível, emojis no minimizado.
+-- ThurX & Samy Hub: Skin/Avatar Menu Script (Delta Executor/Mobile Ready)
+-- Interface AMOLED, arrastável, layout pedido, FLOOD/AVATAR/ITEMS FUNCIONANDO
 
--- Serviços
+-- SERVIÇOS
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
--- Cores e assets
+-- CORES
 local AMOLED = Color3.fromRGB(0,0,0)
 local WHITE = Color3.fromRGB(255,255,255)
 local GRAY = Color3.fromRGB(220,220,220)
-local LIGHTGRAY = Color3.fromRGB(200,200,200)
 local PURPLE = Color3.fromRGB(130,0,220)
 local WARNING = Color3.fromRGB(255, 120, 50)
 local BARBLACK = Color3.fromRGB(10,10,10)
 
-local ICONS = { -- Roblox oficiais
-  ["Idle"] = "rbxassetid://507766666",
-  ["Levitar"] = "rbxassetid://507766666",
-  ["Vampiro"] = "rbxassetid://507770239",
-  ["Ninja"] = "rbxassetid://507777826",
-  ["Zumbi"] = "rbxassetid://507766388",
-  ["Robô"] = "rbxassetid://507776043",
-  ["SuperHero"] = "rbxassetid://616111295",
-  ["Cartwheel"] = "rbxassetid://1015570390",
-  ["Pose"] = "rbxassetid://5319828216",
-  ["Dança 1"] = "rbxassetid://507777268",
-  ["Dança 2"] = "rbxassetid://507776043",
-  ["Dança 3"] = "rbxassetid://507771019",
-  ["Dança 4"] = "rbxassetid://616139451",
-  ["Dança 5"] = "rbxassetid://507777623",
-}
+-- IDs DE ITENS (exemplo, substitua pelos IDs reais das imagens/itens do seu jogo)
+local CHAPEUS = {"12345678", "23456789", "34567890"} -- coloque os IDs reais
+local MASCARAS = {"45678901", "56789012"}
+local CAMISAS = {"67890123", "78901234"}
+local GARRAS = {"89012345"}
+local SAPATOS = {"90123456"}
+local MAO = {"12340123"}
+local FLORES = {"21098765"}
 
--- Animações e Danças (IDs válidos oficiais Roblox)
-local ANIMATIONS = {
-    {Name = "Idle", Id = "507766666"},
-    {Name = "Levitar", Id = "507766666"},
-    {Name = "Pose", Id = "5319828216"},
-    {Name = "Vampiro", Id = "507770239"},
-    {Name = "Ninja", Id = "507777826"},
-    {Name = "Zumbi", Id = "507766388"},
-    {Name = "Robô", Id = "507776043"},
-    {Name = "SuperHero", Id = "616111295"},
-    {Name = "Cartwheel", Id = "1015570390"},
-}
-local DANCES = {
-    {Name = "Dança 1", Id = "507777268"},
-    {Name = "Dança 2", Id = "507776043"},
-    {Name = "Dança 3", Id = "507771019"},
-    {Name = "Dança 4", Id = "616139451"},
-    {Name = "Dança 5", Id = "507777623"},
-}
-
-local TROLL_MESSAGES = {
-    "[servidor] servidor foi hackeado pela samy&thurxhub",
-    "[servidor] samy&thurxhub hackead",
-    "[servidor] o chat do servidor foi detectado um usuário cometendo assédio cuidado, pois vai tomar as devidas punições",
-    "[servidor] Samy&thur está no servidor"
-}
-
--- Utilidades
-local function newUICorner(obj, r) local c = Instance.new("UICorner"); c.CornerRadius = UDim.new(0, r or 10); c.Parent = obj; end
+-- UTILS
+local function newUICorner(obj, r) local c=Instance.new("UICorner");c.CornerRadius=UDim.new(0,r or 10);c.Parent=obj;end
 local function clear(tab) for _,v in ipairs(tab:GetChildren()) do if v:IsA("GuiObject") then v:Destroy() end end end
 
--- Busca SayMessageRequest com fallback para executores
+-- GET CHAT EVENT
 local function getChatEvent()
     if ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents") then
         return ReplicatedStorage.DefaultChatSystemChatEvents:FindFirstChild("SayMessageRequest")
     end
     for _,d in pairs(ReplicatedStorage:GetDescendants()) do
-        if d.Name == "SayMessageRequest" then return d end
+        if d.Name=="SayMessageRequest" then return d end
     end
     return nil
 end
 
--- GUI
+-- GUI RAIZ
 local gui = Instance.new("ScreenGui")
-gui.Name = "ThurXSamyHubMobile"
+gui.Name = "ThurXSamySkinHub"
 gui.Parent = game:GetService("CoreGui")
 gui.ResetOnSpawn = false
 
--- TELA DE CARREGAMENTO
-local loadFrame = Instance.new("Frame")
-loadFrame.Size = UDim2.new(0, 360, 0, 170)
-loadFrame.Position = UDim2.new(0.5, -180, 0.5, -85)
-loadFrame.BackgroundColor3 = AMOLED
-loadFrame.BorderSizePixel = 0
-loadFrame.Parent = gui
-newUICorner(loadFrame, 16)
-
-local loadTitle = Instance.new("TextLabel")
-loadTitle.Size = UDim2.new(1,0,0,44)
-loadTitle.Position = UDim2.new(0,0,0,10)
-loadTitle.BackgroundTransparency = 1
-loadTitle.Text = "samy&thur hub"
-loadTitle.TextColor3 = WHITE
-loadTitle.Font = Enum.Font.GothamBold
-loadTitle.TextSize = 30
-loadTitle.Parent = loadFrame
-
-local barLine = Instance.new("Frame")
-barLine.Size = UDim2.new(0.85, 0, 0, 6)
-barLine.Position = UDim2.new(0.075,0,0,60)
-barLine.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-barLine.BorderSizePixel = 0
-barLine.Parent = loadFrame
-newUICorner(barLine, 4)
-
-local barLoad = Instance.new("Frame")
-barLoad.Size = UDim2.new(0, 0, 1, 0)
-barLoad.Position = UDim2.new(0,0,0,0)
-barLoad.BackgroundColor3 = PURPLE
-barLoad.BorderSizePixel = 0
-barLoad.Parent = barLine
-newUICorner(barLoad, 4)
-
-local loadMsg = Instance.new("TextLabel")
-loadMsg.Size = UDim2.new(1,0,0,30)
-loadMsg.Position = UDim2.new(0,0,0,76)
-loadMsg.BackgroundTransparency = 1
-loadMsg.Text = "Carregando recursos..."
-loadMsg.TextColor3 = WHITE
-loadMsg.Font = Enum.Font.Gotham
-loadMsg.TextSize = 16
-loadMsg.Parent = loadFrame
-
-local loadingTexts = {"Carregando recursos...", "Carregando botões...", "Carregando animações...", "Carregando danças...", "Carregando troll...", "Finalizando..."}
-for i,txt in ipairs(loadingTexts) do
-    TweenService:Create(barLoad, TweenInfo.new(1.6, Enum.EasingStyle.Linear), {Size = UDim2.new(i/#loadingTexts,0,1,0)}):Play()
-    loadMsg.Text = txt
-    wait(1.6)
-end
-wait(1)
-loadFrame:Destroy()
-
--- Ícone T
+-- BOTÃO T
 local tBtn = Instance.new("TextButton")
 tBtn.Size = UDim2.new(0, 60, 0, 60)
 tBtn.Position = UDim2.new(0, 20, 0.5, -30)
@@ -151,14 +59,13 @@ tBtn.ZIndex = 100
 newUICorner(tBtn, 18)
 tBtn.Parent = gui
 
--- Estado Minimizado
-local minimized = false
-local miniFrame = nil
+-- MINIMIZADO
+local minimized, miniFrame = false, nil
 
 -- MENU PRINCIPAL
 local menu = Instance.new("Frame")
-menu.Size = UDim2.new(0, 600, 0, 420)
-menu.Position = UDim2.new(0.5, -300, 0.5, -210)
+menu.Size = UDim2.new(0, 600, 0, 440)
+menu.Position = UDim2.new(0.5, -300, 0.5, -220)
 menu.BackgroundColor3 = AMOLED
 menu.Active = true
 menu.Draggable = true
@@ -166,7 +73,7 @@ menu.ZIndex = 50
 menu.Parent = gui
 newUICorner(menu, 18)
 
--- Topo
+-- TOPO
 local topbar = Instance.new("Frame")
 topbar.Size = UDim2.new(1, 0, 0, 46)
 topbar.BackgroundColor3 = AMOLED
@@ -186,7 +93,7 @@ title.TextXAlignment = Enum.TextXAlignment.Left
 title.ZIndex = 52
 title.Parent = topbar
 
--- Botão X
+-- BOTÕES X e -
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0,38,0,34)
 closeBtn.Position = UDim2.new(1, -84, 0, 6)
@@ -199,7 +106,6 @@ closeBtn.ZIndex = 52
 closeBtn.Parent = topbar
 newUICorner(closeBtn, 8)
 
--- Botão -
 local minBtn = Instance.new("TextButton")
 minBtn.Size = UDim2.new(0,38,0,34)
 minBtn.Position = UDim2.new(1, -42, 0, 6)
@@ -212,7 +118,7 @@ minBtn.ZIndex = 52
 minBtn.Parent = topbar
 newUICorner(minBtn, 8)
 
--- Barra preta vertical entre áreas
+-- BARRA VERTICAL
 local bar = Instance.new("Frame")
 bar.Size = UDim2.new(0, 7, 1, -46)
 bar.Position = UDim2.new(0, 97, 0, 46)
@@ -222,7 +128,7 @@ bar.ZIndex = 55
 bar.Parent = menu
 newUICorner(bar, 4)
 
--- Lado esquerdo (abertura de abas)
+-- LADO ESQUERDO - BOTÕES
 local sidebar = Instance.new("Frame")
 sidebar.Size = UDim2.new(0, 97, 1, -46)
 sidebar.Position = UDim2.new(0, 0, 0, 46)
@@ -236,47 +142,34 @@ sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
 sidebarLayout.Padding = UDim.new(0, 12)
 sidebarLayout.Parent = sidebar
 
--- Botão Anim
-local btnAnim = Instance.new("TextButton")
-btnAnim.Size = UDim2.new(1, -16, 0, 50)
-btnAnim.Position = UDim2.new(0, 8, 0, 12)
-btnAnim.BackgroundColor3 = AMOLED
-btnAnim.Text = "Anim"
-btnAnim.Font = Enum.Font.GothamBlack
-btnAnim.TextColor3 = WHITE
-btnAnim.TextSize = 19
-btnAnim.ZIndex = 54
-btnAnim.Parent = sidebar
-btnAnim.AutoButtonColor = true
-newUICorner(btnAnim, 10)
+-- BOTÃO COPIAR SKIN
+local btnCopySkin = Instance.new("TextButton")
+btnCopySkin.Size = UDim2.new(1, -16, 0, 50)
+btnCopySkin.Position = UDim2.new(0, 8, 0, 12)
+btnCopySkin.BackgroundColor3 = AMOLED
+btnCopySkin.Text = "Avatar"
+btnCopySkin.Font = Enum.Font.GothamBlack
+btnCopySkin.TextColor3 = WHITE
+btnCopySkin.TextSize = 18
+btnCopySkin.ZIndex = 54
+btnCopySkin.Parent = sidebar
+btnCopySkin.AutoButtonColor = true
+newUICorner(btnCopySkin, 10)
 
--- Botão Danca
-local btnDanca = Instance.new("TextButton")
-btnDanca.Size = UDim2.new(1, -16, 0, 50)
-btnDanca.BackgroundColor3 = AMOLED
-btnDanca.Text = "Dança"
-btnDanca.Font = Enum.Font.GothamBlack
-btnDanca.TextColor3 = WHITE
-btnDanca.TextSize = 19
-btnDanca.ZIndex = 54
-btnDanca.Parent = sidebar
-btnDanca.AutoButtonColor = true
-newUICorner(btnDanca, 10)
+-- BOTÃO ROUPA/ITENS
+local btnItens = Instance.new("TextButton")
+btnItens.Size = UDim2.new(1, -16, 0, 50)
+btnItens.BackgroundColor3 = AMOLED
+btnItens.Text = "Itens"
+btnItens.Font = Enum.Font.GothamBlack
+btnItens.TextColor3 = WHITE
+btnItens.TextSize = 18
+btnItens.ZIndex = 54
+btnItens.Parent = sidebar
+btnItens.AutoButtonColor = true
+newUICorner(btnItens, 10)
 
--- Botão Troll
-local btnTroll = Instance.new("TextButton")
-btnTroll.Size = UDim2.new(1, -16, 0, 50)
-btnTroll.BackgroundColor3 = AMOLED
-btnTroll.Text = "Troll"
-btnTroll.Font = Enum.Font.GothamBlack
-btnTroll.TextColor3 = WHITE
-btnTroll.TextSize = 19
-btnTroll.ZIndex = 54
-btnTroll.Parent = sidebar
-btnTroll.AutoButtonColor = true
-newUICorner(btnTroll, 10)
-
--- Conteúdo dinâmico direita
+-- CONTEÚDO DIREITA
 local content = Instance.new("Frame")
 content.Size = UDim2.new(1, -104, 1, -46)
 content.Position = UDim2.new(0, 104, 0, 46)
@@ -285,210 +178,214 @@ content.ZIndex = 54
 content.Parent = menu
 newUICorner(content, 14)
 
--- Função barra preta ao rolar
-local function showBar()
-    bar.Visible = true
-    spawn(function()
-        local t = tick()
-        while tick()-t < 1.1 do wait(0.1) end
-        bar.Visible = false
-    end)
-end
+---------------------- FUNÇÕES DE CONTEÚDO ------------------------
 
--- Função animações/danças
-local function showAnimacoes(tabList, titleText)
+-- Avatar/Skin Copy
+local function showAvatarTab()
     clear(content)
+    -- Título
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 40)
+    title.Size = UDim2.new(1, 0, 0, 44)
     title.Position = UDim2.new(0, 0, 0, 0)
     title.BackgroundTransparency = 1
-    title.Text = titleText
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 23
-    title.TextColor3 = AMOLED
+    title.Text = "Copiar skin"
+    title.Font = Enum.Font.GothamBlack
+    title.TextSize = 21
+    title.TextColor3 = Color3.fromRGB(30,30,30)
+    title.TextXAlignment = Enum.TextXAlignment.Right
     title.ZIndex = 55
     title.Parent = content
 
-    local panel = Instance.new("Frame")
-    panel.Size = UDim2.new(1, -50, 0, 120)
-    panel.Position = UDim2.new(0, 25, 0, 50)
-    panel.BackgroundColor3 = GRAY
-    panel.ZIndex = 55
-    panel.Parent = content
-    newUICorner(panel, 16)
+    local subt = Instance.new("TextLabel")
+    subt.Size = UDim2.new(1, 0, 0, 18)
+    subt.Position = UDim2.new(0, 0, 0, 40)
+    subt.BackgroundTransparency = 1
+    subt.Text = "*copie a skin de um jogador*"
+    subt.Font = Enum.Font.Gotham
+    subt.TextSize = 14
+    subt.TextColor3 = Color3.fromRGB(120,120,120)
+    subt.ZIndex = 55
+    subt.Parent = content
 
-    local scroll = Instance.new("ScrollingFrame")
-    scroll.Size = UDim2.new(1, 0, 1, 0)
-    scroll.CanvasSize = UDim2.new(0, #tabList*110, 0, 0)
-    scroll.BackgroundTransparency = 1
-    scroll.ScrollBarThickness = 5
-    scroll.ScrollingDirection = Enum.ScrollingDirection.X
-    scroll.ZIndex = 56
-    scroll.Parent = panel
+    -- Lista de jogadores
+    local playerLabel = Instance.new("TextLabel")
+    playerLabel.Size = UDim2.new(1, -20, 0, 18)
+    playerLabel.Position = UDim2.new(0, 10, 0, 60)
+    playerLabel.BackgroundTransparency = 1
+    playerLabel.Text = "Jogador:"
+    playerLabel.Font = Enum.Font.GothamSemibold
+    playerLabel.TextSize = 15
+    playerLabel.TextColor3 = Color3.fromRGB(60,60,60)
+    playerLabel.ZIndex = 55
+    playerLabel.Parent = content
 
-    local iconsLayout = Instance.new("UIListLayout")
-    iconsLayout.FillDirection = Enum.FillDirection.Horizontal
-    iconsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
-    iconsLayout.Padding = UDim.new(0, 16)
-    iconsLayout.Parent = scroll
+    local selectedPlayer = nil
 
-    for _,anim in ipairs(tabList) do
-        local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(0, 100, 0, 110)
-        btn.BackgroundColor3 = LIGHTGRAY
-        btn.Text = ""
-        btn.ZIndex = 57
-        btn.Parent = scroll
-        newUICorner(btn, 10)
+    local plrDrop = Instance.new("TextButton")
+    plrDrop.Size = UDim2.new(1,-20,0,36)
+    plrDrop.Position = UDim2.new(0,10,0,80)
+    plrDrop.BackgroundColor3 = GRAY
+    plrDrop.Text = "Escolher jogador"
+    plrDrop.Font = Enum.Font.Gotham
+    plrDrop.TextColor3 = Color3.fromRGB(30,30,30)
+    plrDrop.TextSize = 15
+    plrDrop.ZIndex = 56
+    plrDrop.Parent = content
+    newUICorner(plrDrop, 8)
 
-        local img = Instance.new("ImageLabel")
-        img.BackgroundTransparency = 1
-        img.Size = UDim2.new(0, 58, 0, 58)
-        img.Position = UDim2.new(0.5, -29, 0, 10)
-        img.Image = ICONS[anim.Name] or "rbxassetid://7072722950"
-        img.ZIndex = 58
-        img.Parent = btn
+    local playerListFrame
 
-        local lbl = Instance.new("TextLabel")
-        lbl.Size = UDim2.new(1, 0, 0, 32)
-        lbl.Position = UDim2.new(0, 0, 1, -32)
-        lbl.BackgroundTransparency = 1
-        lbl.Text = anim.Name
-        lbl.TextColor3 = AMOLED
-        lbl.TextSize = 15
-        lbl.Font = Enum.Font.Gotham
-        lbl.ZIndex = 58
-        lbl.Parent = btn
-
-        btn.MouseButton1Click:Connect(function()
-            local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-            if humanoid then
-                for _,track in pairs(humanoid:GetPlayingAnimationTracks()) do
-                    track:Stop()
-                end
-                local animObj = Instance.new("Animation")
-                animObj.AnimationId = "rbxassetid://"..anim.Id
-                local playTrack = humanoid:LoadAnimation(animObj)
-                playTrack:Play()
-            end
-        end)
+    local function updatePlayers()
+        if playerListFrame and playerListFrame.Parent then playerListFrame:Destroy() end
+        playerListFrame = Instance.new("Frame")
+        playerListFrame.Size = UDim2.new(1,-20,0, #Players:GetPlayers()*30 + 10)
+        playerListFrame.Position = UDim2.new(0,10,0,116)
+        playerListFrame.BackgroundColor3 = GRAY
+        playerListFrame.ZIndex = 57
+        playerListFrame.Parent = content
+        newUICorner(playerListFrame, 7)
+        for i,p in ipairs(Players:GetPlayers()) do
+            local btn = Instance.new("TextButton")
+            btn.Size = UDim2.new(1,-10,0,28)
+            btn.Position = UDim2.new(0,5,0,(i-1)*30+5)
+            btn.BackgroundColor3 = Color3.fromRGB(230,230,230)
+            btn.Text = p.DisplayName.." ("..p.Name..")"
+            btn.Font = Enum.Font.Gotham
+            btn.TextColor3 = Color3.fromRGB(40,40,40)
+            btn.TextSize = 14
+            btn.ZIndex = 58
+            btn.Parent = playerListFrame
+            newUICorner(btn, 6)
+            btn.MouseButton1Click:Connect(function()
+                selectedPlayer = p
+                plrDrop.Text = p.DisplayName.." ("..p.Name..")"
+                if playerListFrame and playerListFrame.Parent then playerListFrame:Destroy() end
+            end)
+        end
     end
 
-    scroll:GetPropertyChangedSignal("CanvasPosition"):Connect(showBar)
-end
+    plrDrop.MouseButton1Click:Connect(updatePlayers)
 
--- Função Troll Message
-local function showTroll()
-    clear(content)
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 38)
-    title.Position = UDim2.new(0, 0, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Text = "Troll mensagem"
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 23
-    title.TextColor3 = AMOLED
-    title.ZIndex = 55
-    title.Parent = content
+    local refreshBtn = Instance.new("TextButton")
+    refreshBtn.Size = UDim2.new(0, 120, 0, 34)
+    refreshBtn.Position = UDim2.new(0, 10, 0, 116 + (#Players:GetPlayers()*30 + 18))
+    refreshBtn.BackgroundColor3 = AMOLED
+    refreshBtn.Text = "Atualizar lista"
+    refreshBtn.Font = Enum.Font.GothamSemibold
+    refreshBtn.TextColor3 = WHITE
+    refreshBtn.TextSize = 15
+    refreshBtn.ZIndex = 56
+    refreshBtn.Parent = content
+    newUICorner(refreshBtn, 8)
+    refreshBtn.MouseButton1Click:Connect(updatePlayers)
 
-    local msgBtn = Instance.new("TextButton")
-    msgBtn.Size = UDim2.new(1, -60, 0, 48)
-    msgBtn.Position = UDim2.new(0, 30, 0, 54)
-    msgBtn.BackgroundColor3 = AMOLED
-    msgBtn.Text = "aperte aqui   >"
-    msgBtn.Font = Enum.Font.GothamBold
-    msgBtn.TextSize = 18
-    msgBtn.TextColor3 = WHITE
-    msgBtn.ZIndex = 56
-    msgBtn.Parent = content
-    newUICorner(msgBtn, 14)
-
-    local avisoflood = Instance.new("TextLabel")
-    avisoflood.Size = UDim2.new(1,-24,0,32)
-    avisoflood.Position = UDim2.new(0,12,0,108)
-    avisoflood.BackgroundTransparency = 1
-    avisoflood.Text = "(sua conta pode ter risco de aviso e pode levar ban de 1 dia tome cuidado)"
-    avisoflood.Font = Enum.Font.Gotham
-    avisoflood.TextSize = 14
-    avisoflood.TextColor3 = WARNING
-    avisoflood.ZIndex = 57
-    avisoflood.Parent = content
-
-    local msgDropdown
-    local flooding = false
-    local floodConn = nil
-    local lastFloodMsg = ""
-
-    msgBtn.MouseButton1Click:Connect(function()
-        if msgDropdown and msgDropdown.Parent then msgDropdown:Destroy() end
-        msgDropdown = Instance.new("Frame")
-        msgDropdown.Size = UDim2.new(1, -60, 0, (#TROLL_MESSAGES*36)+10)
-        msgDropdown.Position = UDim2.new(0, 30, 0, 160)
-        msgDropdown.BackgroundColor3 = AMOLED
-        msgDropdown.ZIndex = 57
-        msgDropdown.Parent = content
-        newUICorner(msgDropdown, 10)
-
-        for i, msg in ipairs(TROLL_MESSAGES) do
-            local optBtn = Instance.new("TextButton")
-            optBtn.Size = UDim2.new(1, -16, 0, 32)
-            optBtn.Position = UDim2.new(0, 8, 0, (i-1)*36+6)
-            optBtn.BackgroundColor3 = Color3.fromRGB(25,25,25)
-            optBtn.TextColor3 = WHITE
-            optBtn.Text = msg
-            optBtn.Font = Enum.Font.Gotham
-            optBtn.TextSize = 14
-            optBtn.ZIndex = 58
-            optBtn.Parent = msgDropdown
-            newUICorner(optBtn, 8)
-
-            optBtn.MouseButton1Click:Connect(function()
-                lastFloodMsg = msg
-                -- Botão ativar/desativar flood
-                if msgDropdown:FindFirstChild("AtivarFloodBtn") then msgDropdown.AtivarFloodBtn:Destroy() end
-                local ativarBtn = Instance.new("TextButton")
-                ativarBtn.Name = "AtivarFloodBtn"
-                ativarBtn.Size = UDim2.new(0, 164, 0, 36)
-                ativarBtn.Position = UDim2.new(0.5, -82, 1, 8)
-                ativarBtn.BackgroundColor3 = Color3.fromRGB(24,24,24)
-                ativarBtn.Text = (flooding and "Desativar Flood" or "Ativar Flood")
-                ativarBtn.TextColor3 = flooding and Color3.fromRGB(255,60,60) or Color3.fromRGB(0,255,100)
-                ativarBtn.Font = Enum.Font.GothamBold
-                ativarBtn.TextSize = 16
-                ativarBtn.ZIndex = 59
-                ativarBtn.Parent = msgDropdown
-                newUICorner(ativarBtn, 8)
-
-                ativarBtn.MouseButton1Click:Connect(function()
-                    flooding = not flooding
-                    ativarBtn.Text = flooding and "Desativar Flood" or "Ativar Flood"
-                    ativarBtn.TextColor3 = flooding and Color3.fromRGB(255,60,60) or Color3.fromRGB(0,255,100)
-                    if flooding then
-                        if floodConn then floodConn:Disconnect() floodConn = nil end
-                        floodConn = RunService.Heartbeat:Connect(function()
-                            local chatEvent = getChatEvent()
-                            if chatEvent and lastFloodMsg ~= "" then
-                                chatEvent:FireServer(lastFloodMsg, "All")
-                            end
-                            wait(1)
-                        end)
-                    else
-                        if floodConn then floodConn:Disconnect() floodConn = nil end
-                    end
-                end)
-            end)
+    local applyBtn = Instance.new("TextButton")
+    applyBtn.Size = UDim2.new(1,-20,0,38)
+    applyBtn.Position = UDim2.new(0,10,0,180 + (#Players:GetPlayers()*30 + 18))
+    applyBtn.BackgroundColor3 = PURPLE
+    applyBtn.Text = "Aplicar skin"
+    applyBtn.Font = Enum.Font.GothamBold
+    applyBtn.TextColor3 = WHITE
+    applyBtn.TextSize = 18
+    applyBtn.ZIndex = 57
+    applyBtn.Parent = content
+    newUICorner(applyBtn, 8)
+    applyBtn.MouseButton1Click:Connect(function()
+        if selectedPlayer and selectedPlayer.Character and LocalPlayer.Character then
+            for _,obj in ipairs(LocalPlayer.Character:GetChildren()) do
+                if obj:IsA("Accessory") or obj:IsA("Shirt") or obj:IsA("Pants") then
+                    obj:Destroy()
+                end
+            end
+            for _,obj in ipairs(selectedPlayer.Character:GetChildren()) do
+                if obj:IsA("Accessory") or obj:IsA("Shirt") or obj:IsA("Pants") then
+                    local clone = obj:Clone()
+                    clone.Parent = LocalPlayer.Character
+                end
+            end
         end
     end)
 end
 
--- Seletores de abas
-btnAnim.MouseButton1Click:Connect(function() showAnimacoes(ANIMATIONS, "animacoes") end)
-btnDanca.MouseButton1Click:Connect(function() showAnimacoes(DANCES, "dancas") end)
-btnTroll.MouseButton1Click:Connect(showTroll)
-showAnimacoes(ANIMATIONS, "animacoes")
+-- Aba Itens/Roupas
+local function showItensTab()
+    clear(content)
+    local y = 0
+    local function makeSection(nome, lista)
+        local section = Instance.new("Frame")
+        section.Size = UDim2.new(1, -20, 0, 48 + #lista*44)
+        section.Position = UDim2.new(0, 10, 0, y)
+        section.BackgroundTransparency = 1
+        section.ZIndex = 55
+        section.Parent = content
 
--- Minimizar
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(0, 100, 0, 26)
+        label.Position = UDim2.new(0, 0, 0, 0)
+        label.BackgroundTransparency = 1
+        label.Text = nome
+        label.Font = Enum.Font.GothamBold
+        label.TextColor3 = Color3.fromRGB(40,40,40)
+        label.TextSize = 17
+        label.ZIndex = 56
+        label.Parent = section
+
+        for i,id in ipairs(lista) do
+            local idbtn = Instance.new("TextButton")
+            idbtn.Size = UDim2.new(0, 100, 0, 34)
+            idbtn.Position = UDim2.new(0, 108, 0, 30+(i-1)*44)
+            idbtn.BackgroundColor3 = GRAY
+            idbtn.Text = id
+            idbtn.Font = Enum.Font.Gotham
+            idbtn.TextColor3 = Color3.fromRGB(60,60,60)
+            idbtn.TextSize = 13
+            idbtn.ZIndex = 57
+            idbtn.Parent = section
+            newUICorner(idbtn, 7)
+
+            local aplicar = Instance.new("TextButton")
+            aplicar.Size = UDim2.new(0, 90, 0, 28)
+            aplicar.Position = UDim2.new(0, 220, 0, 32+(i-1)*44)
+            aplicar.BackgroundColor3 = PURPLE
+            aplicar.Text = "Aplicar"
+            aplicar.Font = Enum.Font.GothamBold
+            aplicar.TextColor3 = WHITE
+            aplicar.TextSize = 13
+            aplicar.ZIndex = 57
+            aplicar.Parent = section
+            newUICorner(aplicar, 7)
+
+            aplicar.MouseButton1Click:Connect(function()
+                -- Exemplo: adicionar Accessory ao personagem, troque para sua lógica de adicionar item
+                local char = LocalPlayer.Character
+                if char then
+                    local acc = Instance.new("Accessory")
+                    acc.Name = nome.."_"..id
+                    local handle = Instance.new("Part")
+                    handle.Name = "Handle"
+                    handle.Size = Vector3.new(1,1,1)
+                    handle.Parent = acc
+                    acc.Parent = char
+                end
+            end)
+        end
+        y = y + section.Size.Y.Offset + 8
+    end
+    makeSection("Chapéu", CHAPEUS)
+    makeSection("Máscara", MASCARAS)
+    makeSection("Camisa", CAMISAS)
+    makeSection("Garras", GARRAS)
+    makeSection("Sapato", SAPATOS)
+    makeSection("Mão", MAO)
+    makeSection("Flores", FLORES)
+end
+
+-- TROCA DE ABAS
+btnCopySkin.MouseButton1Click:Connect(showAvatarTab)
+btnItens.MouseButton1Click:Connect(showItensTab)
+showAvatarTab()
+
+-- MINIMIZAR/MÁXIMIZAR/MENU T
 minBtn.MouseButton1Click:Connect(function()
     menu.Visible = false
     minimized = true
@@ -565,13 +462,10 @@ minBtn.MouseButton1Click:Connect(function()
     miniFrame.Visible = true
 end)
 
--- Fechar menu
 closeBtn.MouseButton1Click:Connect(function()
     menu.Visible = false
     tBtn.Visible = true
 end)
-
--- Reabrir menu com T
 tBtn.MouseButton1Click:Connect(function()
     menu.Visible = true
     tBtn.Visible = false
