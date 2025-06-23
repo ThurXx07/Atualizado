@@ -1,13 +1,15 @@
--- ThurX & Samy Hub Mobile Menu Script (Delta Executor Ready)
--- Feito para StarterGui ou StarterPlayerScripts, mobile-friendly, AMOLED design.
+-- ThurX & Samy Hub Menu Script (Mobile, Delta Executor)
+-- Corrigido: Flood realmente envia, ícones atualizados, lista de animações/danças com IDs válidos,
+-- layout AMOLED, barra preta de rolagem, minimizar/maximizar/menu T, aviso de spam visível, emojis no minimizado.
 
 -- Serviços
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 
--- Cores
+-- Cores e assets
 local AMOLED = Color3.fromRGB(0,0,0)
 local WHITE = Color3.fromRGB(255,255,255)
 local GRAY = Color3.fromRGB(220,220,220)
@@ -16,10 +18,28 @@ local PURPLE = Color3.fromRGB(130,0,220)
 local WARNING = Color3.fromRGB(255, 120, 50)
 local BARBLACK = Color3.fromRGB(10,10,10)
 
--- Animações e Danças (IDs atualizados, pode adicionar mais)
+local ICONS = { -- Roblox oficiais
+  ["Idle"] = "rbxassetid://507766666",
+  ["Levitar"] = "rbxassetid://507766666",
+  ["Vampiro"] = "rbxassetid://507770239",
+  ["Ninja"] = "rbxassetid://507777826",
+  ["Zumbi"] = "rbxassetid://507766388",
+  ["Robô"] = "rbxassetid://507776043",
+  ["SuperHero"] = "rbxassetid://616111295",
+  ["Cartwheel"] = "rbxassetid://1015570390",
+  ["Pose"] = "rbxassetid://5319828216",
+  ["Dança 1"] = "rbxassetid://507777268",
+  ["Dança 2"] = "rbxassetid://507776043",
+  ["Dança 3"] = "rbxassetid://507771019",
+  ["Dança 4"] = "rbxassetid://616139451",
+  ["Dança 5"] = "rbxassetid://507777623",
+}
+
+-- Animações e Danças (IDs válidos oficiais Roblox)
 local ANIMATIONS = {
-    {Name = "Pose", Id = "5319828216"},
+    {Name = "Idle", Id = "507766666"},
     {Name = "Levitar", Id = "507766666"},
+    {Name = "Pose", Id = "5319828216"},
     {Name = "Vampiro", Id = "507770239"},
     {Name = "Ninja", Id = "507777826"},
     {Name = "Zumbi", Id = "507766388"},
@@ -28,11 +48,11 @@ local ANIMATIONS = {
     {Name = "Cartwheel", Id = "1015570390"},
 }
 local DANCES = {
-    {Name = "Dança 1", Id = "182435998"},
-    {Name = "Dança 2", Id = "521557028"},
-    {Name = "Dança 3", Id = "248263260"},
-    {Name = "Dança 4", Id = "521557234"},
-    {Name = "Dança 5", Id = "521558650"},
+    {Name = "Dança 1", Id = "507777268"},
+    {Name = "Dança 2", Id = "507776043"},
+    {Name = "Dança 3", Id = "507771019"},
+    {Name = "Dança 4", Id = "616139451"},
+    {Name = "Dança 5", Id = "507777623"},
 }
 
 local TROLL_MESSAGES = {
@@ -45,6 +65,17 @@ local TROLL_MESSAGES = {
 -- Utilidades
 local function newUICorner(obj, r) local c = Instance.new("UICorner"); c.CornerRadius = UDim.new(0, r or 10); c.Parent = obj; end
 local function clear(tab) for _,v in ipairs(tab:GetChildren()) do if v:IsA("GuiObject") then v:Destroy() end end end
+
+-- Busca SayMessageRequest com fallback para executores
+local function getChatEvent()
+    if ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents") then
+        return ReplicatedStorage.DefaultChatSystemChatEvents:FindFirstChild("SayMessageRequest")
+    end
+    for _,d in pairs(ReplicatedStorage:GetDescendants()) do
+        if d.Name == "SayMessageRequest" then return d end
+    end
+    return nil
+end
 
 -- GUI
 local gui = Instance.new("ScreenGui")
@@ -314,7 +345,7 @@ local function showAnimacoes(tabList, titleText)
         img.BackgroundTransparency = 1
         img.Size = UDim2.new(0, 58, 0, 58)
         img.Position = UDim2.new(0.5, -29, 0, 10)
-        img.Image = "rbxassetid://7072722950" -- Ícone Roblox default
+        img.Image = ICONS[anim.Name] or "rbxassetid://7072722950"
         img.ZIndex = 58
         img.Parent = btn
 
@@ -361,20 +392,9 @@ local function showTroll()
     title.ZIndex = 55
     title.Parent = content
 
-    local aviso = Instance.new("TextLabel")
-    aviso.Size = UDim2.new(1, 0, 0, 32)
-    aviso.Position = UDim2.new(0, 0, 0, 36)
-    aviso.BackgroundTransparency = 1
-    aviso.Text = "(sua conta pode ter risco de aviso e pode levar ban de 1 dia tome cuidado)"
-    aviso.Font = Enum.Font.Gotham
-    aviso.TextSize = 14
-    aviso.TextColor3 = WARNING
-    aviso.ZIndex = 55
-    aviso.Parent = content
-
     local msgBtn = Instance.new("TextButton")
     msgBtn.Size = UDim2.new(1, -60, 0, 48)
-    msgBtn.Position = UDim2.new(0, 30, 0, 76)
+    msgBtn.Position = UDim2.new(0, 30, 0, 54)
     msgBtn.BackgroundColor3 = AMOLED
     msgBtn.Text = "aperte aqui   >"
     msgBtn.Font = Enum.Font.GothamBold
@@ -384,13 +404,27 @@ local function showTroll()
     msgBtn.Parent = content
     newUICorner(msgBtn, 14)
 
+    local avisoflood = Instance.new("TextLabel")
+    avisoflood.Size = UDim2.new(1,-24,0,32)
+    avisoflood.Position = UDim2.new(0,12,0,108)
+    avisoflood.BackgroundTransparency = 1
+    avisoflood.Text = "(sua conta pode ter risco de aviso e pode levar ban de 1 dia tome cuidado)"
+    avisoflood.Font = Enum.Font.Gotham
+    avisoflood.TextSize = 14
+    avisoflood.TextColor3 = WARNING
+    avisoflood.ZIndex = 57
+    avisoflood.Parent = content
+
     local msgDropdown
+    local flooding = false
+    local floodConn = nil
+    local lastFloodMsg = ""
 
     msgBtn.MouseButton1Click:Connect(function()
         if msgDropdown and msgDropdown.Parent then msgDropdown:Destroy() end
         msgDropdown = Instance.new("Frame")
-        msgDropdown.Size = UDim2.new(1, -60, 0, (#TROLL_MESSAGES*32)+8)
-        msgDropdown.Position = UDim2.new(0, 30, 0, 134)
+        msgDropdown.Size = UDim2.new(1, -60, 0, (#TROLL_MESSAGES*36)+10)
+        msgDropdown.Position = UDim2.new(0, 30, 0, 160)
         msgDropdown.BackgroundColor3 = AMOLED
         msgDropdown.ZIndex = 57
         msgDropdown.Parent = content
@@ -399,7 +433,7 @@ local function showTroll()
         for i, msg in ipairs(TROLL_MESSAGES) do
             local optBtn = Instance.new("TextButton")
             optBtn.Size = UDim2.new(1, -16, 0, 32)
-            optBtn.Position = UDim2.new(0, 8, 0, (i-1)*32+4)
+            optBtn.Position = UDim2.new(0, 8, 0, (i-1)*36+6)
             optBtn.BackgroundColor3 = Color3.fromRGB(25,25,25)
             optBtn.TextColor3 = WHITE
             optBtn.Text = msg
@@ -410,32 +444,34 @@ local function showTroll()
             newUICorner(optBtn, 8)
 
             optBtn.MouseButton1Click:Connect(function()
+                lastFloodMsg = msg
                 -- Botão ativar/desativar flood
+                if msgDropdown:FindFirstChild("AtivarFloodBtn") then msgDropdown.AtivarFloodBtn:Destroy() end
                 local ativarBtn = Instance.new("TextButton")
+                ativarBtn.Name = "AtivarFloodBtn"
                 ativarBtn.Size = UDim2.new(0, 164, 0, 36)
                 ativarBtn.Position = UDim2.new(0.5, -82, 1, 8)
                 ativarBtn.BackgroundColor3 = Color3.fromRGB(24,24,24)
-                ativarBtn.Text = "Ativar Flood"
-                ativarBtn.TextColor3 = Color3.fromRGB(0,255,100)
+                ativarBtn.Text = (flooding and "Desativar Flood" or "Ativar Flood")
+                ativarBtn.TextColor3 = flooding and Color3.fromRGB(255,60,60) or Color3.fromRGB(0,255,100)
                 ativarBtn.Font = Enum.Font.GothamBold
                 ativarBtn.TextSize = 16
                 ativarBtn.ZIndex = 59
                 ativarBtn.Parent = msgDropdown
                 newUICorner(ativarBtn, 8)
 
-                local flooding = false
-                local floodConn = nil
-
                 ativarBtn.MouseButton1Click:Connect(function()
                     flooding = not flooding
                     ativarBtn.Text = flooding and "Desativar Flood" or "Ativar Flood"
                     ativarBtn.TextColor3 = flooding and Color3.fromRGB(255,60,60) or Color3.fromRGB(0,255,100)
                     if flooding then
-                        floodConn = game:GetService("RunService").Heartbeat:Connect(function()
-                            if ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents") and ReplicatedStorage.DefaultChatSystemChatEvents:FindFirstChild("SayMessageRequest") then
-                                ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
+                        if floodConn then floodConn:Disconnect() floodConn = nil end
+                        floodConn = RunService.Heartbeat:Connect(function()
+                            local chatEvent = getChatEvent()
+                            if chatEvent and lastFloodMsg ~= "" then
+                                chatEvent:FireServer(lastFloodMsg, "All")
                             end
-                            wait(1.1)
+                            wait(1)
                         end)
                     else
                         if floodConn then floodConn:Disconnect() floodConn = nil end
@@ -446,7 +482,7 @@ local function showTroll()
     end)
 end
 
--- Abas
+-- Seletores de abas
 btnAnim.MouseButton1Click:Connect(function() showAnimacoes(ANIMATIONS, "animacoes") end)
 btnDanca.MouseButton1Click:Connect(function() showAnimacoes(DANCES, "dancas") end)
 btnTroll.MouseButton1Click:Connect(showTroll)
